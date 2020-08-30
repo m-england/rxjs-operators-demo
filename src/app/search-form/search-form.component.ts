@@ -8,6 +8,7 @@ import {
     debounceTime,
     filter,
     distinctUntilChanged,
+    tap,
 } from 'rxjs/operators';
 import { Name } from '../models/name';
 import { SearchService } from '../search.service';
@@ -34,7 +35,9 @@ export class SearchFormComponent implements AfterViewInit {
             debounceTime(250),
             filter((term) => term),
             distinctUntilChanged(),
-            switchMap((name) => this.searchService.search(name))
+            tap(() => (this.loading = true)),
+            switchMap((name) => this.searchService.search(name)),
+            tap(() => (this.loading = false))
         );
     }
 }
