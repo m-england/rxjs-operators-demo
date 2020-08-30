@@ -1,0 +1,19 @@
+<input #searchBox class="input is-large is-info" (keyup)="search()" type="text" placeholder="Search ..."
+    [(ngModel)]="input" />
+
+<hr />
+
+<div class="spinner" *ngIf="loading">
+    <rxo-spinner></rxo-spinner>
+</div>
+
+<div class="error is-error" *ngIf="errored">
+    Failed to find age information
+</div>
+
+<div *ngIf="result">
+    <div class="columns">
+        <div class="column is-one-fifth">{{result.name}}</div>
+        <div class="column">{{result.age}}</div>
+    </div>
+</div>
