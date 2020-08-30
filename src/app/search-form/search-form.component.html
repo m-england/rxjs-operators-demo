@@ -1,5 +1,4 @@
-<input #searchBox class="input is-large is-info" (keyup)="search()" type="text" placeholder="Search ..."
-    [(ngModel)]="input" />
+<input #searchBox class="input is-large is-info" type="text" placeholder="Search ..." />
 
 <hr />
 
@@ -11,7 +10,7 @@
     Failed to find age information
 </div>
 
-<div *ngIf="result">
+<div *ngIf="result$ | async as result">
     <div class="columns">
         <div class="column is-one-fifth">{{result.name}}</div>
         <div class="column">{{result.age}}</div>

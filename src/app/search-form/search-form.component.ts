@@ -1,33 +1,29 @@
-import { Component } from '@angular/core';
-import { SearchService } from '../search.service';
+import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
+import { fromEvent, Observable } from 'rxjs';
+import { map, switchMap, mergeMap, flatMap } from 'rxjs/operators';
 import { Name } from '../models/name';
+import { SearchService } from '../search.service';
 
 @Component({
     selector: 'rxo-search-form',
     templateUrl: './search-form.component.html',
     styleUrls: ['./search-form.component.css'],
 })
-export class SearchFormComponent {
-    result: Name;
-    input: string;
+export class SearchFormComponent implements AfterViewInit {
+    @ViewChild('searchBox') searchInput: ElementRef;
+    result$: Observable<Name>;
+
     loading: boolean;
     errored: boolean;
 
     constructor(private searchService: SearchService) {}
 
-    async search(): Promise<void> {
-        if (this.input) {
-            this.loading = true;
-            this.searchService.search(this.input).subscribe(
-                (data) => {
-                    this.result = data;
-                    this.loading = false;
-                },
-                (err) => {
-                    this.errored = true;
-                    this.loading = false;
-                }
-            );
-        }
+    ngAfterViewInit(): void {
+        this.searchInput.nativeElement.focus();
+
+        this.result$ = fromEvent<any>(this.searchInput.nativeElement, 'keyup').pipe(
+            map((event) => event.target.value),
+            flatMap((name) => this.searchService.search(name))
+        );
     }
 }
