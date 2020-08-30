@@ -1,15 +1,13 @@
 import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
-import { fromEvent, Observable, of } from 'rxjs';
+import { fromEvent, Observable, of, timer } from 'rxjs';
 import {
+    catchError,
+    debounceTime,
+    distinctUntilChanged,
+    filter,
     map,
     switchMap,
-    mergeMap,
-    flatMap,
-    debounceTime,
-    filter,
-    distinctUntilChanged,
     tap,
-    catchError,
 } from 'rxjs/operators';
 import { Name } from '../models/name';
 import { SearchService } from '../search.service';
@@ -36,14 +34,12 @@ export class SearchFormComponent implements AfterViewInit {
             debounceTime(250),
             filter((term) => term),
             distinctUntilChanged(),
-            tap(() => {
-                this.loading = true;
-                this.errored = false;
-            }),
+            tap(() => (this.loading = true)),
             switchMap((name) =>
                 this.searchService.search(name).pipe(
                     catchError((err) => {
                         this.errored = true;
+                        timer(2000).subscribe(() => (this.errored = false));
                         return of(null);
                     })
                 )
