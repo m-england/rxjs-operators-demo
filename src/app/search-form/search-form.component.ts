@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
 import { fromEvent, Observable } from 'rxjs';
-import { map, switchMap, mergeMap, flatMap, debounceTime } from 'rxjs/operators';
+import { map, switchMap, mergeMap, flatMap, debounceTime, filter } from 'rxjs/operators';
 import { Name } from '../models/name';
 import { SearchService } from '../search.service';
 
@@ -24,6 +24,7 @@ export class SearchFormComponent implements AfterViewInit {
         this.result$ = fromEvent<any>(this.searchInput.nativeElement, 'keyup').pipe(
             map((event) => event.target.value),
             debounceTime(250),
+            filter((term) => term),
             switchMap((name) => this.searchService.search(name))
         );
     }
