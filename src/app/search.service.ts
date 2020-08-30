@@ -1,9 +1,10 @@
-import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Name } from './models/name';
+import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { retryWhen } from 'rxjs/operators';
 import { environment } from '../environments/environment';
-import { retry } from 'rxjs/operators';
+import { genericRetryStrategy } from './rxjs-utils/generic-retry-strategy';
+import { Name } from './models/name';
 
 @Injectable({
     providedIn: 'root',
@@ -12,6 +13,8 @@ export class SearchService {
     constructor(private http: HttpClient) {}
 
     search(name: string): Observable<Name> {
-        return this.http.get<Name>(`${environment.apiUrl}z?name=${name}`).pipe(retry(1));
+        return this.http
+            .get<Name>(`${environment.apiUrl}z?name=${name}`)
+            .pipe(retryWhen(genericRetryStrategy({ maxRetryAttempts: 2 })));
     }
 }
