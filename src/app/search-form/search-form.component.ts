@@ -8,6 +8,7 @@ import {
     map,
     switchMap,
     tap,
+    timeout,
 } from 'rxjs/operators';
 import { Name } from '../models/name';
 import { SearchService } from '../search.service';
@@ -37,6 +38,7 @@ export class SearchFormComponent implements AfterViewInit {
             tap(() => (this.loading = true)),
             switchMap((name) =>
                 this.searchService.search(name).pipe(
+                    timeout(2500),
                     catchError((err) => {
                         this.errored = true;
                         timer(2000).subscribe(() => (this.errored = false));
