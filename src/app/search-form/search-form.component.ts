@@ -23,7 +23,7 @@ export class SearchFormComponent implements AfterViewInit {
 
         this.result$ = fromEvent<any>(this.searchInput.nativeElement, 'keyup').pipe(
             map((event) => event.target.value),
-            flatMap((name) => this.searchService.search(name))
+            switchMap((name) => this.searchService.search(name))
         );
     }
 }
