@@ -15,9 +15,6 @@ export class SearchService {
     search(name: string): Observable<Name> {
         return this.http
             .get<Name>(`${environment.apiUrl}?name=${name}`)
-            .pipe(
-                delay(10000),
-                retryWhen(genericRetryStrategy({ maxRetryAttempts: 2, scalingDuration: 500 }))
-            );
+            .pipe(retryWhen(genericRetryStrategy({ maxRetryAttempts: 2, scalingDuration: 500 })));
     }
 }
